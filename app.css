@@ -1,0 +1,147 @@
+/*Reset*/
+
+html,
+body,
+h1,
+p,
+button,
+ul,
+li {
+    padding: 0;
+    margin: 0;
+}
+
+button:focus {
+    outline: none;
+}
+
+body {
+    font: normal normal normal 12px/1.5rem sans-serif;
+}
+
+li {
+    list-style: none;
+}
+
+.container {
+    margin: 0 auto 3rem;
+    max-width: 42rem;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.container h1 {
+    order: 0;
+    flex: none;
+    font-size: 2rem;
+    line-height: 3rem;
+    text-align: center;
+    height: 3rem;
+    margin: 1rem 0 1rem;
+}
+
+.status {
+    width: 100%;
+    height: 2rem;
+    padding: 0 2rem;
+    box-sizing: border-box;
+    align-self: center;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.score {
+    order: 0;
+    flex: none;
+    width: 4rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.score .star {
+    flex: auto;
+    text-align: center;
+}
+
+.score .star>i {
+    line-height: 2rem;
+}
+
+.moves {
+    order: 1;
+    flex: 1 0 auto;
+    margin: 0 0 0 2rem;
+    font-size: 1rem;
+}
+
+.moves>span {
+    line-height: 2rem;
+}
+
+.control-btn {
+    order: 2;
+    flex: none;
+    border: 1px solid #2dbfe4;
+    border-radius: 0.5rem;
+    height: 2rem;
+    padding: 0 2rem;
+    color: #2dbfe4;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    background: #2dbfe4;
+    color: #fff;
+}
+
+.deck {
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
+    border-radius: 0.8rem;
+    margin: 1rem 0 0 0;
+    padding: 0 0 2rem 0;
+    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
+}
+
+.deck .card {
+    flex: none;
+    margin: 2rem 0 0 2rem;
+    width: 8rem;
+    height: 8rem;
+    line-height: 8rem;
+    text-align: center;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 0.5rem;
+    background-color: #2e3d49;
+    box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
+    cursor: pointer;
+    color: #fff;
+    font-size: 0;
+}
+
+.deck .card.open {
+    font-size: 2rem;
+    background: #02b3e4;
+    cursor: default;
+}
+
+.deck .card.match {
+    cursor: default;
+    background: #02ccba;
+    font-size: 2rem;
+}
+
+.message {}
