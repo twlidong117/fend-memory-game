@@ -105,12 +105,6 @@ Deck.prototype.matchOpenCards = function() {
  */
 function Game() {
     /**
-     * 一局游戏的标识符
-     * @type {number}
-     */
-    this.id = Game.prototype.id + 1;
-    Game.prototype.id = this.id;
-    /**
      * 当前游戏的卡片组
      * @type {Deck}
      */
@@ -132,10 +126,6 @@ function Game() {
     this.time = 0;
 }
 /**
- * Game实例共享属性，游戏标识符的初始值
- */
-Game.prototype.id = 1;
-/**
  * Game实例方法，启动游戏
  * @returns {number} 启动游戏时间（毫秒）
  */
@@ -143,13 +133,12 @@ Game.prototype.start = function() {
     return Date.now();
 };
 /**
- * Game实例方法，结束游戏
+ * Game实例方法，暂停游戏
  * @param {number} beginTime - 启动时间(毫秒)
  */
-Game.prototype.stop = function(beginTime) {
+Game.prototype.pause = function(beginTime) {
     let endTime = Date.now();
     this.time = this.time + endTime - beginTime;
-
 };
 /**
  * Game实例方法，根据步数修改星级
@@ -163,9 +152,21 @@ Game.prototype.changeScore = function() {
         this.score = 1;
     }
 };
-Game.prototype.end = function() {
-    this.stop();
-    //保存状态数据到localStorage
+/**
+ * Game实例方法，结束游戏
+ * @param {number} beginTime - 启动时间(毫秒)
+ */
+Game.prototype.stop = function(beginTime) {
+    this.pause(beginTime);
+    //保存状态数据到localStorage.localStorage只接受字符串
+    let gameInfo = {
+        moves: this.moves,
+        score: this.score,
+        time: this.time
+    };
+    let gameInfos = JSON.parse(localStorage.getItem('memoryGame')) || [];
+    gameInfos.push(gameInfo);
+    localStorage.setItem('memoryGame', JSON.stringify(gameInfos));
 };
 
 /**
@@ -247,12 +248,13 @@ const dom = {
     },
     /**
      * 匹配卡片成功
+     * @param {HTMLElement} cardNode
      */
     matchCard: function(cardNode) {
         cardNode.classList.add('match');
     },
     /**
-     * 显示统计数据
+     * 显示结果弹窗
      * @param {HTMLElement} msgNode
      * @param {Game} game - 当前游戏实例game
      */
