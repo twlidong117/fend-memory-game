@@ -151,6 +151,18 @@ Game.prototype.stop = function(beginTime) {
     this.time = this.time + endTime - beginTime;
 
 };
+/**
+ * Game实例方法，根据步数修改星级
+ */
+Game.prototype.changeScore = function() {
+    if (this.moves < 40) {
+        this.score = 3;
+    } else if (this.moves >= 40 && this.moves < 80) {
+        this.score = 2;
+    } else if (this.moves >= 80) {
+        this.score = 1;
+    }
+};
 Game.prototype.end = function() {
     this.stop();
     //保存状态数据到localStorage
@@ -313,6 +325,7 @@ const dom = {
                     }
                     game.moves++;
                     dom.changeMovesAndScore(movesNode, scoreNode, game.moves);
+                    game.changeScore();
                     if (game.deck.leftCardsNum === 0) {
                         game.stop(startTime);
                         dom.reset(deckNode, scoreNode, movesNode, ctrlBtn);

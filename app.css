@@ -130,11 +130,14 @@ li {
     cursor: pointer;
     color: #fff;
     font-size: 0;
+    transform: rotateY(180deg);
+    animation: 0.5s ease-in-out forwards closecard;
 }
 
 .deck .card.open {
     font-size: 2rem;
     background: #02b3e4;
+    animation: 0.5s ease-in-out forwards opencard;
     cursor: default;
 }
 
@@ -142,6 +145,8 @@ li {
     cursor: default;
     background: #02ccba;
     font-size: 2rem;
+    animation: 0.5s ease-in-out 0.1s backwards matchcard;
+    transform: rotateY(0);
 }
 
 .message {
@@ -183,4 +188,34 @@ li {
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
+}
+
+@keyframes opencard {
+    from {
+        transform: rotateY(180deg);
+    }
+    to {
+        transform: rotateY(0);
+    }
+}
+
+@keyframes closecard {
+    from {
+        transform: rotateX(0);
+    }
+    to {
+        transform: rotateY(180deg);
+    }
+}
+
+@keyframes matchcard {
+    from {
+        background: #02b3e4;
+    }
+    50% {
+        background: #fff;
+    }
+    to {
+        background: #02b3e4;
+    }
 }
