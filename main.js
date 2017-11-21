@@ -339,6 +339,10 @@ const dom = {
                     deckNode.removeEventListener('click', cb.onDeckClick, false);
                 }
             },
+            /**
+             * deck节点click事件的回调函数
+             * @param {Event} event
+             */
             onDeckClick: function(event) {
                 event.stopPropagation();
                 let index = parseInt(event.target.id);
@@ -370,6 +374,10 @@ const dom = {
                     }
                 }
             },
+            /**
+             * return-btn按钮的回调函数
+             * @param {Event} event
+             */
             onRtBtnClick: function(event) {
                 dom.closeMsg(msgNode);
             }
