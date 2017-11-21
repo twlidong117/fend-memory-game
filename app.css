@@ -11,12 +11,16 @@ li {
     margin: 0;
 }
 
+button {
+    background: #fff;
+}
+
 button:focus {
     outline: none;
 }
 
 body {
-    font: normal normal normal 12px/1.5rem sans-serif;
+    font: normal normal normal 12px/1.5rem "Helvetica Neue", Helvetica, sans-serif;
 }
 
 li {
@@ -161,6 +165,7 @@ li {
     padding: 10rem 0 0 0;
     color: #555;
     display: none;
+    overflow-y: auto;
 }
 
 .msg-title {
@@ -188,6 +193,28 @@ li {
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
+}
+
+.game-history {
+    flex: none;
+    align-self: center;
+    margin: 0 0 2rem 0;
+    font-size: 1rem;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.game-history td {
+    border: 1px solid black;
+    padding: 0.2rem;
+    box-sizing: border-box;
+    width: 5rem;
+    text-align: center;
+    font-weight: lighter;
+}
+
+.game-history thead {
+    font-weight: bold;
 }
 
 @keyframes opencard {

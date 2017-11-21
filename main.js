@@ -158,15 +158,15 @@ Game.prototype.changeScore = function() {
  */
 Game.prototype.stop = function(beginTime) {
     this.pause(beginTime);
-    //保存状态数据到localStorage.localStorage只接受字符串
+    //保存状态数据到sessionStorage.sessionStorage只接受字符串
     let gameInfo = {
         moves: this.moves,
         score: this.score,
-        time: this.time
+        time: (this.time / 1000)
     };
-    let gameInfos = JSON.parse(localStorage.getItem('memoryGame')) || [];
+    let gameInfos = JSON.parse(sessionStorage.getItem('memoryGame')) || [];
     gameInfos.push(gameInfo);
-    localStorage.setItem('memoryGame', JSON.stringify(gameInfos));
+    sessionStorage.setItem('memoryGame', JSON.stringify(gameInfos));
 };
 
 /**
@@ -203,7 +203,7 @@ const dom = {
      * @param {HTMLElement} btn
      */
     toggleCtrlBtn: function(btn) {
-        btn.firstElementChild.classList.toggle('fa-stop');
+        btn.firstElementChild.classList.toggle('fa-pause');
     },
     /**
      * 重置界面
@@ -263,6 +263,7 @@ const dom = {
         msgBodyNode.children.item(0).textContent = game.moves;
         msgBodyNode.children.item(1).textContent = game.score;
         msgBodyNode.children.item(2).textContent = game.time / 1000;
+        dom.showHistory(msgNode);
         msgNode.style.display = 'block';
     },
     /**
@@ -270,7 +271,34 @@ const dom = {
      * @param {HTMLElement} msgNode
      */
     closeMsg: function(msgNode) {
+        let tableNode = msgNode.firstElementChild.children.item(2);
+        tableNode.removeChild(tableNode.lastElementChild);
         msgNode.style.display = 'none';
+    },
+    /**
+     * 显示游戏历史记录
+     * @param {HTMLElement} msgNode
+     */
+    showHistory: function(msgNode) {
+        let tabelNode = msgNode.firstElementChild.children.item(2);
+        let games = JSON.parse(sessionStorage.getItem('memoryGame'));
+        if (games !== null) {
+            let df = new DocumentFragment();
+            let tbody = document.createElement('tbody');
+            games.forEach(function(game, index, games) {
+                let tr = document.createElement('tr');
+                for (p in game) {
+                    if (game.hasOwnProperty(p)) {
+                        let td = document.createElement('td');
+                        td.textContent = game[p];
+                        tr.appendChild(td);
+                    }
+                }
+                tbody.appendChild(tr);
+            });
+            df.appendChild(tbody);
+            tabelNode.appendChild(df);
+        }
     }
 
 };
@@ -278,7 +306,7 @@ const dom = {
 (function() {
     window.onload = function() {
         let startTime = 0;
-        let ctrlFlag = 'stop';
+        let ctrlFlag = 'pause';
         let deckNode = dom.getNode('.deck');
         let cardNodes = deckNode.children;
         let ctrlBtn = dom.getNode('.control-btn');
@@ -287,22 +315,27 @@ const dom = {
         let msgNode = dom.getNode('.message');
         let rtBtn = dom.getNode('.return-btn');
         let game = new Game();
+        dom.initCards(deckNode, game.deck.cards);
         let lastOpenCardNode = null;
         const cb = {
+            /**
+             * control按钮click事件的回调函数
+             * @param {Event} event
+             */
             onCtrlBtnClick: function(event) {
                 event.stopPropagation();
                 dom.toggleCtrlBtn(ctrlBtn);
-                if (ctrlFlag === 'stop') {
+                if (ctrlFlag === 'pause') {
                     ctrlFlag = 'doing';
-                    game = game || new Game();
-                    dom.initCards(deckNode, game.deck.cards);
+                    if (game === null) {
+                        game = new Game();
+                        dom.initCards(deckNode, game.deck.cards);
+                    }
                     startTime = game.start();
                     deckNode.addEventListener('click', cb.onDeckClick, false);
                 } else if (ctrlFlag === 'doing') {
-                    ctrlFlag = 'stop';
-                    game.stop(startTime);
-                    dom.reset(deckNode, scoreNode, movesNode, ctrlBtn);
-                    game = null;
+                    ctrlFlag = 'pause';
+                    game.pause(startTime);
                     deckNode.removeEventListener('click', cb.onDeckClick, false);
                 }
             },
@@ -333,12 +366,12 @@ const dom = {
                         dom.reset(deckNode, scoreNode, movesNode, ctrlBtn);
                         dom.showMsg(msgNode, game);
                         game = null;
-                        ctrlFlag = 'stop';
+                        ctrlFlag = 'pause';
                     }
                 }
             },
             onRtBtnClick: function(event) {
-                msgNode.style.display = 'none';
+                dom.closeMsg(msgNode);
             }
         };
         ctrlBtn.addEventListener('click', cb.onCtrlBtnClick, false);
