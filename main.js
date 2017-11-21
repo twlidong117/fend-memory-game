@@ -220,7 +220,7 @@ const dom = {
             cardNode.removeChild(cardNode.firstElementChild);
         }
         this.changeMovesAndScore(movesNode, scoreNode, 0);
-        btnNode.firstElementChild.classList.remove('fa-stop');
+        this.toggleCtrlBtn(btnNode);
     },
     /**
      * 初始化卡片界面

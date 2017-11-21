@@ -19,8 +19,14 @@ button:focus {
     outline: none;
 }
 
-body {
+html {
     font: normal normal normal 12px/1.5rem "Helvetica Neue", Helvetica, sans-serif;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    html {
+        font: normal normal normal 24px/1.5rem "Helvetica Neue", Helvetica, sans-serif;
+    }
 }
 
 li {
