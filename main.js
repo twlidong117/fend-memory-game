@@ -190,9 +190,9 @@ const dom = {
         let stars = scoreNode.children;
         for (let i = 0; i < 3; i++) {
             let node = stars.item(i);
-            if (moves <= 40) {
+            if (moves <= 20) {
                 node.style.visibility = 'visible';
-            } else if ((40 < moves && moves < 80 && i === 0) || (moves >= 80 && i !== 2)) {
+            } else if ((20 < moves && moves < 40 && i === 0) || (moves >= 40 && i !== 2)) {
                 node.style.visibility = 'hidden';
             }
         }
@@ -303,6 +303,18 @@ const dom = {
 
 };
 
+/**
+ * 辅助函数，等待给定时间(ms)后执行操作
+ * @param {number} ms - 等待时间
+ */
+function wait(ms) {
+    return new Promise(function(resolve) {
+        window.setTimeout(function() {
+            resolve();
+        }, ms);
+    });
+}
+
 (function() {
     window.onload = function() {
         let startTime = 0;
@@ -353,24 +365,27 @@ const dom = {
                         lastOpenCardNode = cardNodes.item(index);
                     }
                     if (game.deck.openCards.length === 2) {
-                        let res = game.deck.matchOpenCards();
-                        if (res) {
-                            dom.matchCard(lastOpenCardNode);
-                            dom.matchCard(event.target);
-                        } else {
-                            dom.toggleCard(event.target);
-                            dom.toggleCard(lastOpenCardNode);
-                        }
-                        game.moves++;
-                    }
-                    dom.changeMovesAndScore(movesNode, scoreNode, game.moves);
-                    game.changeScore();
-                    if (game.deck.leftCardsNum === 0) {
-                        game.stop(startTime);
-                        dom.reset(deckNode, scoreNode, movesNode, ctrlBtn);
-                        dom.showMsg(msgNode, game);
-                        game = null;
-                        ctrlFlag = 'pause';
+                        wait(100).then(function() {
+                            if (game.deck.matchOpenCards()) {
+                                dom.matchCard(lastOpenCardNode);
+                                dom.matchCard(event.target);
+                            } else {
+                                dom.toggleCard(lastOpenCardNode);
+                                dom.toggleCard(event.target);
+                            }
+                            game.moves++;
+                            dom.changeMovesAndScore(movesNode, scoreNode, game.moves);
+                            game.changeScore();
+                            if (game.deck.leftCardsNum === 0) {
+                                game.stop(startTime);
+                                dom.reset(deckNode, scoreNode, movesNode, ctrlBtn);
+                                wait(500).then(function() {
+                                    dom.showMsg(msgNode, game);
+                                    game = null;
+                                });
+                                ctrlFlag = 'pause';
+                            }
+                        });
                     }
                 }
             },
