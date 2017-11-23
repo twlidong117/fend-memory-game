@@ -144,11 +144,11 @@ Game.prototype.pause = function(beginTime) {
  * Game实例方法，根据步数修改星级
  */
 Game.prototype.changeScore = function() {
-    if (this.moves < 40) {
+    if (this.moves < 20) {
         this.score = 3;
-    } else if (this.moves >= 40 && this.moves < 80) {
+    } else if (this.moves >= 20 && this.moves < 40) {
         this.score = 2;
-    } else if (this.moves >= 80) {
+    } else if (this.moves >= 40) {
         this.score = 1;
     }
 };
@@ -209,16 +209,18 @@ const dom = {
      * 重置界面
      * @param {HTMLElement} deckNode
      * @param {HTMLElement} scoreNode
+     * @param {HTMLElement} timerNode
      * @param {HTMLElement} movesNode
      * @param {HTMLElement} btnNode
      */
-    reset: function(deckNode, scoreNode, movesNode, btnNode) {
+    reset: function(deckNode, scoreNode, timerNode, movesNode, btnNode) {
         for (let i = 0; i < 16; i++) {
             let cardNode = deckNode.children.item(i);
             cardNode.classList.remove('match');
             cardNode.classList.remove('open');
             cardNode.removeChild(cardNode.firstElementChild);
         }
+        timerNode.textContent = 0;
         this.changeMovesAndScore(movesNode, scoreNode, 0);
         this.toggleCtrlBtn(btnNode);
     },
@@ -324,9 +326,11 @@ function wait(ms) {
         let ctrlBtn = dom.getNode('.control-btn');
         let scoreNode = dom.getNode('.score');
         let movesNode = dom.getNode('#moves');
+        let timerNode = dom.getNode('#duration');
         let msgNode = dom.getNode('.message');
         let rtBtn = dom.getNode('.return-btn');
         let game = new Game();
+        let timer = 0;
         dom.initCards(deckNode, game.deck.cards);
         let lastOpenCardNode = null;
         const cb = {
@@ -344,11 +348,17 @@ function wait(ms) {
                         dom.initCards(deckNode, game.deck.cards);
                     }
                     startTime = game.start();
+                    let s = parseInt(timerNode.textContent);
                     deckNode.addEventListener('click', cb.onDeckClick, false);
+                    timer = window.setInterval(function() {
+                        s++;
+                        timerNode.textContent = s;
+                    }, 1000);
                 } else if (ctrlFlag === 'doing') {
                     ctrlFlag = 'pause';
                     game.pause(startTime);
                     deckNode.removeEventListener('click', cb.onDeckClick, false);
+                    window.clearInterval(timer);
                 }
             },
             /**
@@ -378,7 +388,8 @@ function wait(ms) {
                             game.changeScore();
                             if (game.deck.leftCardsNum === 0) {
                                 game.stop(startTime);
-                                dom.reset(deckNode, scoreNode, movesNode, ctrlBtn);
+                                dom.reset(deckNode, scoreNode, timerNode, movesNode, ctrlBtn);
+                                window.clearInterval(timer);
                                 wait(500).then(function() {
                                     dom.showMsg(msgNode, game);
                                     game = null;

@@ -94,6 +94,10 @@ li {
     line-height: 2rem;
 }
 
+#duration {
+    margin: 0 0 0 1rem;
+}
+
 .control-btn {
     order: 2;
     flex: none;
