@@ -361,8 +361,8 @@ const dom = {
                             dom.toggleCard(event.target);
                             dom.toggleCard(lastOpenCardNode);
                         }
+                        game.moves++;
                     }
-                    game.moves++;
                     dom.changeMovesAndScore(movesNode, scoreNode, game.moves);
                     game.changeScore();
                     if (game.deck.leftCardsNum === 0) {
